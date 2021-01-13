@@ -2,12 +2,20 @@
   "compilerOptions": {
     "outDir": "dist",
     "module": "commonjs",
-    "target": "es2019",
+    "target": "es2020",
     "esModuleInterop": true,
     "sourceMap": true,
     "rootDir": "src",
-    "baseUrl": "src"
+    "baseUrl": "src",
+    "typeRoots": ["./src/@types", "./node_modules/@types"],
+    "strictNullChecks": true, // enable strict null checks as a best practice
+    "strict": true,
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   },
-  "include": ["src/**/*"],
+  "include": ["./src/**/*"],
   "exclude": ["node_modules"]
 }

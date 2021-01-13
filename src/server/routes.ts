@@ -1,5 +1,7 @@
-import { Express, Router } from 'express';
+import { Express, Router, Request, Response, NextFunction } from 'express';
 import TelegramBot from 'node-telegram-bot-api';
+import { IdService } from '../services/twitch';
+import { TokenController } from './../controllers/TokenController';
 
 const FELIPE_ID = 1433252838;
 const LUCAS_ID = 970679066;
@@ -7,7 +9,15 @@ const LUCAS_ID = 970679066;
 export default (app: Express, telegramBot: TelegramBot): void => {
   const router = Router();
 
-  app.use('/api', router);
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    req.botInstance = telegramBot;
+
+    return next();
+  });
+
+  app.get('/renew', (req: Request, res: Response) => {
+    return new TokenController(new IdService()).handle(req, res);
+  });
 
   app.post('/webhook', (req, res) => {
     console.log({

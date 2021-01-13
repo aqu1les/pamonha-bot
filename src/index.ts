@@ -5,4 +5,4 @@ require('dotenv').config();
 
 makeConnection();
 const telegramBot = new Bot();
-new WebServer(telegramBot);
+new WebServer(telegramBot).listen();

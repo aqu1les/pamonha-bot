@@ -8,8 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/index.js",
-    "dev": "nodemon --watch 'src/' --exec ts-node src/index.ts -e ts"
+    "start": "ts-node --files src/index.ts",
+    "dev": "nodemon --watch src/ --files --exec ts-node src/index.ts -e ts"
   },
   "author": "",
   "license": "ISC",

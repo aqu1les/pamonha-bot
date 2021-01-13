@@ -6,7 +6,7 @@ import TelegramBot, {
 
 export class Bot extends TelegramBot {
   constructor() {
-    super(process.env.TELEGRAM_TOKEN, {
+    super(process.env.TELEGRAM_TOKEN || '', {
       polling: true,
     });
   }

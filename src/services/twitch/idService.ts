@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import Querystring from 'querystring';
 
-class IdService {
+export class IdService {
   private httpClient: AxiosInstance;
 
   constructor() {
@@ -23,8 +23,6 @@ class IdService {
     return this.httpClient.post(`oauth2/token?${params}`);
   }
 }
-
-export default new IdService();
 
 type TwitchCredentials = {
   access_token: string;
