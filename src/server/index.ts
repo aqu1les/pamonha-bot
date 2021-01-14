@@ -14,7 +14,7 @@ export class WebServer {
 
   public listen(): void {
     this.app.listen(3333, () => {
-      console.log('listening');
+      console.log('Web Server ouvindo na porta 3333');
     });
   }
 
