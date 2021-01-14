@@ -11,3 +11,16 @@ export type CommandFactory = (bot: TelegramBot) => Command;
 export type CommandStore = {
   [key: string]: Command;
 };
+
+export interface OAuthService {
+  refreshToken(data?: Record<string, unknown>): Promise<OAuthService.Response>;
+}
+
+export namespace OAuthService {
+  export type Response = {
+    accessToken: string;
+    expiresIn: number;
+    platform: string;
+    tokenType?: string;
+  };
+}

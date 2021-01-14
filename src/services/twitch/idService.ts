@@ -1,14 +1,16 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import { OAuthService } from '../../@types/global';
+import axios, { AxiosInstance } from 'axios';
 import Querystring from 'querystring';
+import { TwitchCredentials } from '../../@types/twitch';
 
-export class IdService {
+export class IdService implements OAuthService {
   private httpClient: AxiosInstance;
 
   constructor() {
     this.httpClient = axios.create({ baseURL: 'https://id.twitch.tv' });
   }
 
-  refreshToken(): Promise<AxiosResponse<TwitchCredentials>> {
+  async refreshToken(): Promise<OAuthService.Response> {
     const {
       TWITCH_CLIENT_ID: client_id,
       TWITCH_SECRET: client_secret,
@@ -20,12 +22,15 @@ export class IdService {
       grant_type: 'client_credentials',
     });
 
-    return this.httpClient.post(`oauth2/token?${params}`);
+    const { data } = await this.httpClient.post<TwitchCredentials>(
+      `oauth2/token?${params}`
+    );
+
+    return {
+      accessToken: data.access_token,
+      expiresIn: data.expires_in,
+      tokenType: data.token_type,
+      platform: 'twitch',
+    };
   }
 }
-
-type TwitchCredentials = {
-  access_token: string;
-  expires_in: number;
-  token_type: string;
-};
