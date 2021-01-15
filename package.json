@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node --files src/index.ts",
+    "start": "node dist/index.js",
+    "build": "rimraf dist && tsc -p tsconfig.json",
     "dev": "nodemon --watch src/ --files --exec ts-node src/index.ts -e ts"
   },
   "author": "",
@@ -27,6 +28,7 @@
     "@types/mongoose": "^5.10.3",
     "@types/node-telegram-bot-api": "^0.51.0",
     "nodemon": "^2.0.7",
+    "rimraf": "^3.0.2",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.3"
   }
