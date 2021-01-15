@@ -35,7 +35,7 @@ startCommands()
 
     telegramBot.listen('message', (message: Message, metadata: Metadata) => {
       if (!message.text || message.text[0] !== '/') return;
-      const key = message.text.replace(/[^\w\s]/gi, '');
+      const [key] = message.text.replace(/[^\w\s]/gi, '').split(` `);
 
       if (commandStore[key]) {
         const command = commandStore[key];

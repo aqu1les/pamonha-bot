@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { SettingsModel } from './Models/Settings';
 
 export const makeConnection = () => {
   mongoose
@@ -10,6 +11,13 @@ export const makeConnection = () => {
         useUnifiedTopology: true,
       }
     )
-    .then(() => console.log('DB connection'))
+    .then(async () => {
+      console.log('DB connection');
+      const settings = await SettingsModel.findOne({
+        platform: 'twitch',
+      }).exec();
+
+      process.env.TWITCH_TOKEN = settings.accessToken;
+    })
     .catch((err) => console.log(err));
 };

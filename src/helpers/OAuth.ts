@@ -20,6 +20,13 @@ export class OAuthHelper {
     settings.platform = newCredentials.platform;
     await settings.save();
 
+    const processName = this._platformTokenEnv(settings.platform);
+    process.env[processName] = settings.accessToken;
+
     return settings;
+  }
+
+  private _platformTokenEnv(platform: string): string {
+    return `${platform.toUpperCase()}_TOKEN`;
   }
 }
