@@ -10,7 +10,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/index.js",
     "build": "rimraf dist && tsc -p tsconfig.json",
-    "dev": "nodemon --files src/ --exec ts-node src/index.ts -e ts"
+    "dev": "nodemon --files src/ --exec ts-node src/index.ts -e ts",
+    "start:prod": "pm2 start dist/index.js"
   },
   "author": "",
   "license": "ISC",
