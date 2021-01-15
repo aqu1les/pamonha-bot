@@ -1,4 +1,8 @@
-import { StreamerInfo, SubsResponse } from '../../@types/twitch';
+import {
+  StreamerInfo,
+  SubscriptionResponse,
+  SubsResponse,
+} from '../../@types/twitch';
 import axios, { AxiosInstance } from 'axios';
 import Querystring from 'querystring';
 import { StreamerNotFound } from '../../exceptions/twitch';
@@ -43,20 +47,32 @@ export default class ApiService {
     });
   }
 
-  subscribeWebhook(streamerId: string) {
-    const { APP_URL: app_url, SECRET_WEBHOOK: secret } = process.env;
+  subscribeWebhook(streamerId: string): Promise<SubscriptionResponse> {
+    return new Promise(async (resolve, reject) => {
+      const { APP_URL: app_url, SECRET_WEBHOOK: secret } = process.env;
+      const body = {
+        type: 'stream.online',
+        version: '1',
+        condition: {
+          broadcaster_user_id: streamerId,
+        },
+        transport: {
+          method: 'webhook',
+          callback: app_url + '/webhook',
+          secret,
+        },
+      };
 
-    return this.httpClient.post('helix/eventsub/subscriptions', {
-      type: 'stream.online',
-      version: '1',
-      condition: {
-        broadcaster_user_id: streamerId,
-      },
-      transport: {
-        method: 'webhook',
-        callback: app_url,
-        secret: secret,
-      },
+      const { data } = await this.httpClient.post(
+        'helix/eventsub/subscriptions',
+        body
+      );
+
+      if (data.data instanceof Array && data.data.length === 0) {
+        return reject();
+      }
+
+      return resolve({ ...data.data[0] });
     });
   }
 }

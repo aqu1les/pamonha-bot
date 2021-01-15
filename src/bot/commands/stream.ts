@@ -4,7 +4,9 @@ import ApiService from '../../services/twitch/apiService';
 import { IdService } from '../../services/twitch/idService';
 import { OAuthHelper } from '../../helpers/OAuth';
 import { SettingsModel } from '../../mongodb/Models/Settings';
-import { StreamerNotFound } from './../../exceptions/twitch';
+import { StreamerNotFound } from '../../exceptions/twitch';
+import MySubscriptionsModel from '../../mongodb/Models/MySubscriptions';
+import SubscriptionsModel from '../../mongodb/Models/Subscription';
 
 class StreamCommand implements Command {
   description = 'Use /stream <nome-do-streamer> (Apenas Twitch)';
@@ -20,14 +22,49 @@ class StreamCommand implements Command {
 
     const [_, ...args] = message.text.replace(/[^\w\s]/gi, '').split(` `);
     const streamerName = args[0];
-    if (streamerName.length === 0) return;
+    if (!streamerName || streamerName.length === 0) return;
     this.bot.sendMessage(message.chat.id, 'Vendo se o streamer existe...');
 
     try {
       const streamer = await this.apiService.getStreamer(streamerName);
 
-      this.bot.sendPhoto(message.chat.id, streamer.profile_image_url);
-      this.bot.sendMessage(message.chat.id, streamer.display_name);
+      const mySubscriptionExists = await MySubscriptionsModel.findOne({
+        streamerId: streamer.id,
+        enabled: true,
+      });
+
+      if (!mySubscriptionExists) {
+        const subscription = await this.apiService.subscribeWebhook(
+          streamer.id
+        );
+        await MySubscriptionsModel.create({
+          streamerId: streamer.id,
+          enabled: true,
+          platform: 'twitch',
+          type: subscription.type,
+          platformSubscriptionId: subscription.id,
+        });
+      }
+
+      const userSubscriptionData = {
+        chatId: message.chat.id,
+        platform: 'twitch',
+        streamerId: streamer.id,
+      };
+
+      const userSubscription = await SubscriptionsModel.find(
+        userSubscriptionData
+      );
+
+      if (!userSubscription) {
+        await SubscriptionsModel.create(userSubscriptionData);
+      }
+
+      this.bot.sendMessage(
+        message.chat.id,
+        `Inscrição criada, te avisaremos quando ${streamer.display_name} ficar online o/`
+      );
+
       return;
     } catch (error) {
       if (error instanceof StreamerNotFound) {

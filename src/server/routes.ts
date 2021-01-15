@@ -1,7 +1,11 @@
 import { Express, Router, Request, Response, NextFunction } from 'express';
 import TelegramBot from 'node-telegram-bot-api';
 import { IdService } from '../services/twitch';
-import { TokenController } from './../controllers/TokenController';
+import { TokenController } from '../controllers/TokenController';
+import SubscriptionModel, {
+  Subscription,
+} from '../mongodb/Models/Subscription';
+import MySubscriptionsModel from '../mongodb/Models/MySubscriptions';
 
 const FELIPE_ID = 1433252838;
 const LUCAS_ID = 970679066;
@@ -19,7 +23,12 @@ export default (app: Express, telegramBot: TelegramBot): void => {
     return next();
   });
 
-  app.get('/', (req: Request, res: Response) => {
+  app.get('/', async (req: Request, res: Response) => {
+    const subscriptions = await SubscriptionModel.find({
+      streamerId: 635647858,
+    });
+    console.log(subscriptions);
+
     return res.send('to funfando mano');
   });
 
@@ -27,28 +36,41 @@ export default (app: Express, telegramBot: TelegramBot): void => {
     return new TokenController(new IdService()).handle(req, res);
   });
 
-  app.post('/webhook', (req, res) => {
-    console.log({
-      body: req.body,
-      headers: req.headers,
-    });
-
+  app.post('/webhook', async (req, res) => {
     /* CONFIRM ACTION FOR TWITCH */
     if (req.body.challenge) {
-      return res.status(200).send(req.body.challenge);
+      const { id: subscriptionId } = req.body.subscription;
+      res.status(200).send(req.body.challenge);
+
+      await MySubscriptionsModel.updateOne(
+        {
+          platformSubscriptionId: subscriptionId,
+        },
+        {
+          enabled: true,
+        }
+      );
+
+      return;
     }
 
     if (req.body.event) {
       const { event, subscription } = req.body;
 
       if (subscription.type === TWITCH_EVENTS.STREAM_ON) {
+        console.log({ event, subscription });
+        const subscriptions = await SubscriptionModel.find({
+          streamerId: event.broadcaster_user_id,
+        });
+
         const message = buildStreamOnMessage(
           event.broadcaster_user_name,
           event.broadcaster_user_login
         );
 
-        telegramBot.sendMessage(FELIPE_ID, message);
-        telegramBot.sendMessage(LUCAS_ID, message);
+        subscriptions.map((sub: Subscription) => {
+          telegramBot.sendMessage(sub.chatId, message);
+        });
       } else {
         telegramBot.sendMessage(
           FELIPE_ID,

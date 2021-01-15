@@ -33,3 +33,18 @@ export type SubsResponse = {
   limit: number;
   pagination?: {};
 };
+
+export type SubscriptionResponse = {
+  id: string;
+  status: string;
+  type: string;
+  version: string;
+  conditon: {
+    broadcaster_user_id: string;
+  };
+  created_at: string;
+  transport: {
+    method: string;
+    callback: string;
+  };
+};
