@@ -52,7 +52,7 @@ class StreamCommand implements Command {
         streamerId: streamer.id,
       };
 
-      const userSubscription = await SubscriptionsModel.find(
+      const userSubscription = await SubscriptionsModel.findOne(
         userSubscriptionData
       );
 
