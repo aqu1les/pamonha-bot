@@ -24,11 +24,6 @@ export default (app: Express, telegramBot: TelegramBot): void => {
   });
 
   app.get('/', async (req: Request, res: Response) => {
-    const subscriptions = await SubscriptionModel.find({
-      streamerId: 635647858,
-    });
-    console.log(subscriptions);
-
     return res.send('to funfando mano');
   });
 
@@ -58,7 +53,6 @@ export default (app: Express, telegramBot: TelegramBot): void => {
       const { event, subscription } = req.body;
 
       if (subscription.type === TWITCH_EVENTS.STREAM_ON) {
-        console.log({ event, subscription });
         const subscriptions = await SubscriptionModel.find({
           streamerId: event.broadcaster_user_id,
         });

@@ -4,6 +4,7 @@ import { makeConnection } from './mongodb';
 import { WebServer } from './server';
 import { Bot } from './bot/index';
 import fs from 'fs-extra';
+import path from 'path';
 require('dotenv').config();
 
 makeConnection();
@@ -12,11 +13,16 @@ new WebServer(telegramBot).listen();
 
 const startCommands = async (): Promise<CommandStore> => {
   const handlers: CommandStore = {};
-  const commandsFiles = await fs.readdir('src/bot/commands');
+  const commandsFiles = await fs.readdir(
+    path.resolve(__dirname, './bot/commands')
+  );
 
   await (async () => {
     for (const commandFile of commandsFiles.values()) {
-      if (commandFile.split('.').slice(-1)[0] !== 'ts') return;
+      const allowedExtensions = ['js', 'ts'];
+      const fileExtension = commandFile.split('.').slice(-1)[0];
+
+      if (!allowedExtensions.includes(fileExtension)) return;
 
       const command: Command = (
         await import(`./bot/commands/${commandFile}`)
