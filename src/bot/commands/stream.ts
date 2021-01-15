@@ -39,7 +39,6 @@ class StreamCommand implements Command {
         );
         await MySubscriptionsModel.create({
           streamerId: streamer.id,
-          enabled: true,
           platform: 'twitch',
           type: subscription.type,
           platformSubscriptionId: subscription.id,
