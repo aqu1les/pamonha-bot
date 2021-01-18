@@ -22,7 +22,7 @@ const startCommands = async (): Promise<CommandStore> => {
       const allowedExtensions = ['js', 'ts'];
       const fileExtension = commandFile.split('.').slice(-1)[0];
 
-      if (!allowedExtensions.includes(fileExtension)) return;
+      if (!allowedExtensions.includes(fileExtension)) continue;
 
       const command: Command = (
         await import(`./bot/commands/${commandFile}`)
