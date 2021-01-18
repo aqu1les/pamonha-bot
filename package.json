@@ -1,7 +1,7 @@
 {
   "name": "telegram-bot",
   "version": "1.0.0",
-  "description": "",
+  "description": "O bot do carro da pamonha",
   "main": "src/index.ts",
   "engines": {
     "node": "14.15.4"
