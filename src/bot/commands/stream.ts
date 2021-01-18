@@ -22,7 +22,13 @@ class StreamCommand implements Command {
 
     const [_, ...args] = message.text.replace(/[^\w\s]/gi, '').split(` `);
     const streamerName = args[0];
-    if (!streamerName || streamerName.length === 0) return;
+    if (!streamerName || streamerName.length === 0) {
+      this.bot.sendMessage(
+        message.chat.id,
+        'Digite o comando junto com o nome do streamer'
+      );
+      return;
+    }
     this.bot.sendMessage(message.chat.id, 'Vendo se o streamer existe...');
 
     try {
@@ -55,9 +61,16 @@ class StreamCommand implements Command {
         userSubscriptionData
       );
 
-      if (!userSubscription) {
-        await SubscriptionsModel.create(userSubscriptionData);
+      if (userSubscription) {
+        this.bot.sendMessage(
+          message.chat.id,
+          `Você já possui uma inscrição para esse streamer`
+        );
+
+        return;
       }
+
+      await SubscriptionsModel.create(userSubscriptionData);
 
       this.bot.sendMessage(
         message.chat.id,
