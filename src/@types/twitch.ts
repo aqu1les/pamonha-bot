@@ -48,3 +48,7 @@ export type SubscriptionResponse = {
     callback: string;
   };
 };
+
+export enum TWITCH_EVENTS {
+  STREAM_ON = 'stream.online',
+}
