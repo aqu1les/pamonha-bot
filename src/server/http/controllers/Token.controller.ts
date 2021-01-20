@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { IdService } from '../services/twitch';
+import { IdService } from '../../../services/twitch';
 import { Controller, HttpMethods } from './Controller';
-import { SettingsModel } from '../mongodb/Models/Settings';
-import { OAuthHelper } from '../helpers/OAuth';
+import { SettingsModel } from '../../../mongodb/Models/Settings';
+import { OAuthHelper } from '../../../helpers/OAuth';
 
 const FELIPE_ID = 1433252838;
 const LUCAS_ID = 970679066;

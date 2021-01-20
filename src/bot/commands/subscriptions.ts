@@ -21,6 +21,15 @@ class SubscriptionsCommand implements Command {
       })
     ).map((streamer: Streamer) => streamer.displayName);
 
+    if (streamers.length === 0) {
+      this.bot.sendMessage(
+        message.chat.id,
+        'tu n se inscreveu em ngm ainda porra, usa o comando /stream ai caraio'
+      );
+
+      return;
+    }
+
     const response = 'Tu se inscreveu nos streamers: ' + streamers.join(', ');
 
     this.bot.sendMessage(message.chat.id, response);

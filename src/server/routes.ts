@@ -1,8 +1,8 @@
 import { Express, Request, Response } from 'express';
 import TelegramBot from 'node-telegram-bot-api';
 
-import { Middlewares } from '../middlewares';
-import { Controllers } from '../controllers';
+import { Middlewares } from './http/middlewares';
+import { Controllers } from './http/controllers';
 
 export default (app: Express, telegramBot: TelegramBot): void => {
   Middlewares.forEach((middleware) => {

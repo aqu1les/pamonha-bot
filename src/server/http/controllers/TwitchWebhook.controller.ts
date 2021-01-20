@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 import { Controller, HttpMethods } from './Controller';
-import MySubscriptionsModel from '../mongodb/Models/MySubscriptions';
+import MySubscriptionsModel from '../../../mongodb/Models/MySubscriptions';
 import SubscriptionModel, {
   Subscription,
-} from '../mongodb/Models/Subscription';
+} from '../../../mongodb/Models/Subscription';
 import TelegramBot from 'node-telegram-bot-api';
-import NotificationLog from '../mongodb/Models/NotificationLog';
-import { TWITCH_EVENTS } from '../@types/twitch';
+import NotificationLog from '../../../mongodb/Models/NotificationLog';
+import { TWITCH_EVENTS } from '../../../@types/twitch';
 
 const FELIPE_ID = '1433252838';
 const LUCAS_ID = '970679066';

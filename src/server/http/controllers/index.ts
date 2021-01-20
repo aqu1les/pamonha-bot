@@ -1,4 +1,4 @@
-import { IdService } from '../services/twitch';
+import { IdService } from '../../../services/twitch';
 import { Controller } from './Controller';
 import { TokenController } from './Token.controller';
 import { IndexController } from './Index.controller';
