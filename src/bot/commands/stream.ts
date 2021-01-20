@@ -7,6 +7,7 @@ import { SettingsModel } from '../../mongodb/Models/Settings';
 import { StreamerNotFound } from '../../exceptions/twitch';
 import MySubscriptionsModel from '../../mongodb/Models/MySubscriptions';
 import SubscriptionsModel from '../../mongodb/Models/Subscription';
+import StreamersModel from '../../mongodb/Models/Streamers';
 
 class StreamCommand implements Command {
   description = 'Use /stream <nome-do-streamer> (Apenas Twitch)';
@@ -43,11 +44,18 @@ class StreamCommand implements Command {
         const subscription = await this.apiService.subscribeWebhook(
           streamer.id
         );
+
         await MySubscriptionsModel.create({
           streamerId: streamer.id,
           platform: 'twitch',
           type: subscription.type,
           platformSubscriptionId: subscription.id,
+        });
+
+        await StreamersModel.create({
+          streamerId: streamer.id,
+          login: streamer.login,
+          displayName: streamer.display_name,
         });
       }
 

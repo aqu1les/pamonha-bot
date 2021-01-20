@@ -1,6 +1,6 @@
 import { Schema, model, Document } from 'mongoose';
 
-const MySubscriptionsSchema = new Schema<MySubscriptions>({
+const MySubscriptionsSchema = new Schema<MySubscriptionsDocument>({
   enabled: {
     type: Boolean,
     default: false,
@@ -12,7 +12,7 @@ const MySubscriptionsSchema = new Schema<MySubscriptions>({
   platformSubscriptionId: String,
 });
 
-export interface MySubscriptions extends Document {
+export interface MySubscriptionsDocument extends Document {
   enabled: boolean;
   platform: string;
   streamerId: string;
