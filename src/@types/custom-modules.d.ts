@@ -5,3 +5,9 @@ declare module 'express-serve-static-core' {
     botInstance: TelegramBot;
   }
 }
+
+declare module 'http' {
+  export interface IncomingMessage {
+    verified: boolean;
+  }
+}
