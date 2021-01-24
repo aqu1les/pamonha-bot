@@ -1,41 +1,18 @@
-import { Command, CommandStore } from './@types/global';
 import { Message, Metadata } from 'node-telegram-bot-api';
 import { makeConnection } from './mongodb';
 import { WebServer } from './server';
 import { Bot } from './bot/index';
-import fs from 'fs-extra';
-import path from 'path';
+import { CommandStore } from './core/Command.store';
 require('dotenv').config();
 
 makeConnection();
 const telegramBot = new Bot();
 new WebServer(telegramBot).listen();
 
-const startCommands = async (): Promise<CommandStore> => {
-  const handlers: CommandStore = {};
-  const commandsFiles = await fs.readdir(
-    path.resolve(__dirname, './bot/commands')
-  );
+const commands = CommandStore.getInstance();
 
-  await (async () => {
-    for (const commandFile of commandsFiles.values()) {
-      const allowedExtensions = ['js', 'ts'];
-      const fileExtension = commandFile.split('.').slice(-1)[0];
-
-      if (!allowedExtensions.includes(fileExtension)) continue;
-
-      const command: Command = (
-        await import(`./bot/commands/${commandFile}`)
-      ).default(telegramBot);
-
-      handlers[command.key] = command;
-    }
-  })();
-
-  return handlers;
-};
-
-startCommands()
+commands
+  .startCommands(telegramBot)
   .then((commandStore) => {
     telegramBot.updateCommands(commandStore);
 
