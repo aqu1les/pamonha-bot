@@ -17,9 +17,12 @@ class CuCommand implements Command {
 
   async handler(message: Message): Promise<void> {
     if (!message.from) return;
-    const isBotMention = !!message.entities?.find(
-      (entity) => entity.type === 'mention'
+
+    const mentionEntity = message.entities?.find(
+      (entity) => entity.type === 'mention' || entity.type === 'text_mention'
     );
+
+    const isBotMention = mentionEntity && !mentionEntity.user;
 
     if (isBotMention) {
       this.bot.sendMessage(
@@ -29,10 +32,6 @@ class CuCommand implements Command {
 
       return;
     }
-
-    const mentionEntity = message.entities?.find(
-      (entity) => entity.type === 'text_mention'
-    );
 
     if (!mentionEntity || !mentionEntity.user) {
       this.bot.sendMessage(
